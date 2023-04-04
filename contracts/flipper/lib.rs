@@ -1,30 +1,57 @@
 #![cfg_attr(not(feature = "std"), no_std)]
+#![feature(min_specialization)]
 
 #[ink::contract]
 mod flipper {
+    use ink::prelude::vec::Vec;
+    use openbrush::{
+        traits::{
+            Storage,
+        },
+        contracts::access_control::*,
+    };
+    use meta_tx_context::*;
 
     /// Defines the storage of your contract.
     /// Add new fields to the below struct in order
     /// to add new static storage fields to your contract.
     #[ink(storage)]
+    #[derive(Default, Storage)]
     pub struct Flipper {
+        #[storage_field]
+        access_control: access_control::Data,
+        #[storage_field]
+        meta_tx_context: meta_tx_context::Data,
+
         /// Stores a single `bool` value on the storage.
         value: bool,
+    }
+
+    impl AccessControl for Flipper {}
+    impl MetaTxContext for Flipper {}
+
+    /// Errors that can occur upon calling this contract.
+    #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
+    #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
+    pub enum Error {
+        MetaTxContextError(meta_tx_context::Error),
+    }
+
+    impl From<meta_tx_context::Error> for Error {
+        fn from(err: meta_tx_context::Error) -> Self {
+            Error::MetaTxContextError(err)
+        }
     }
 
     impl Flipper {
         /// Constructor that initializes the `bool` value to the given `init_value`.
         #[ink(constructor)]
-        pub fn new(init_value: bool) -> Self {
-            Self { value: init_value }
-        }
-
-        /// Constructor that initializes the `bool` value to `false`.
-        ///
-        /// Constructors can delegate to other constructors.
-        #[ink(constructor)]
-        pub fn default() -> Self {
-            Self::new(Default::default())
+        pub fn new(trusted_forwarder: AccountId, init_value: bool) -> Self {
+            let mut _instance = Self::default();
+            _instance._init_with_admin(_instance.env().caller());
+            _instance.set_trusted_forwarder(trusted_forwarder).expect("Should have MANAGER role");
+            _instance.value = init_value;
+            _instance
         }
 
         /// A message that can be called on instantiated contracts.
@@ -33,6 +60,15 @@ mod flipper {
         #[ink(message)]
         pub fn flip(&mut self) {
             self.value = !self.value;
+        }
+
+        // Same flip functionality with meta context.
+        #[ink(message)]
+        pub fn flip_meta_context(&mut self, data: Vec<u8>) -> Result<(), Error> {
+            let _caller = self._caller(data)?;
+            ink::env::debug_println!("Flip called by {:?}", _caller);
+            self.value = !self.value;
+            Ok(())
         }
 
         /// Simply returns the current value of our `bool`.
@@ -60,7 +96,7 @@ mod flipper {
         /// We test a simple use case of our contract.
         #[ink::test]
         fn it_works() {
-            let mut flipper = Flipper::new(false);
+            let mut flipper = Flipper::new([0x0; 32].into(), false);
             assert_eq!(flipper.get(), false);
             flipper.flip();
             assert_eq!(flipper.get(), true);

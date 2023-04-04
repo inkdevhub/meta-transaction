@@ -1,28 +1,28 @@
 {
-  "name": "typechain-polkadot-tests",
+  "name": "meta-transaction",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
-  "scripts": {
-    "test:typechain": "jest --testPathPattern \".spec.ts$\" --runInBand"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "repository": "git@github.com:shunsukew/meta-tx.git",
+  "author": "Shunsuke Watanabe <shunsukesan.tech@gmail.com>",
+  "license": "MIT",
   "dependencies": {
-    "@727-ventures/typechain-compiler": "^0.5.16",
-    "@727-ventures/typechain-polkadot": "^0.6.10",
-    "@727-ventures/typechain-types": "^0.0.22",
-    "@polkadot/api": "^9.13.4",
-    "@polkadot/api-contract": "^9.13.4",
-    "@polkadot/keyring": "^10.4.2",
-    "@types/bn.js": "^5.1.0",
-    "@types/jest": "^29.4.0",
-    "@types/node": "^17.0.45",
-    "scale-codec": "^0.11.0-beta.1",
-    "ts-jest": "^29.0.5",
-    "ts-node": "^10.7.0",
-    "typescript": "^4.6.4",
-    "web3": "^1.8.2"
+    "@727-ventures/typechain-compiler": "1.0.0-beta.1",
+    "@727-ventures/typechain-types": "^1.0.0-beta.1",
+    "@polkadot/api": "^10.2.1",
+    "@polkadot/api-contract": "^10.2.1",
+    "@types/chai": "^4.3.4",
+    "@types/chai-as-promised": "^7.1.5",
+    "@types/mocha": "^10.0.1",
+    "chai": "^4.3.7",
+    "chai-as-promised": "^7.1.1",
+    "mocha": "^10.2.0",
+    "mocha-suppress-logs": "^0.3.1",
+    "scale-codec": "^0.11.2",
+    "ts-mocha": "^10.0.0",
+    "typescript": "^5.0.3"
+  },
+  "scripts": {
+    "compile": "npx @727-ventures/typechain-compiler --config ./typechain-compiler-config.json",
+    "test": "mocha --forbid-only -r ts-node/register \"tests/*.test.ts\""
   }
 }
