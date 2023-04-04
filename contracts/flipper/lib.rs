@@ -4,13 +4,11 @@
 #[ink::contract]
 mod flipper {
     use ink::prelude::vec::Vec;
-    use openbrush::{
-        traits::{
-            Storage,
-        },
-        contracts::access_control::*,
-    };
     use meta_tx_context::*;
+    use openbrush::{
+        contracts::access_control::*,
+        traits::Storage,
+    };
 
     /// Defines the storage of your contract.
     /// Add new fields to the below struct in order
@@ -49,7 +47,9 @@ mod flipper {
         pub fn new(trusted_forwarder: AccountId, init_value: bool) -> Self {
             let mut _instance = Self::default();
             _instance._init_with_admin(_instance.env().caller());
-            _instance.set_trusted_forwarder(trusted_forwarder).expect("Should have MANAGER role");
+            _instance
+                .set_trusted_forwarder(trusted_forwarder)
+                .expect("Should have MANAGER role");
             _instance.value = init_value;
             _instance
         }
@@ -102,7 +102,6 @@ mod flipper {
             assert_eq!(flipper.get(), true);
         }
     }
-
 
     /// This is how you'd write end-to-end (E2E) or integration tests for ink! contracts.
     ///

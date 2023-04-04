@@ -1,9 +1,9 @@
+use core::array::TryFromSliceError;
+use ink::prelude::vec::Vec;
 use openbrush::{
+    contracts::access_control::*,
     traits::AccountId,
 };
-use ink::prelude::vec::Vec;
-use openbrush::contracts::access_control::*;
-use core::array::TryFromSliceError;
 
 #[openbrush::wrapper]
 pub type MetaTxContextRef = dyn MetaTxContext;

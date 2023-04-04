@@ -2,13 +2,21 @@
 
 #[ink::contract]
 mod forwarder {
-    use ink::env::{
-        call::{build_call, ExecutionInput},
-        CallFlags,
+    use ink::{
+        env::{
+            call::{
+                build_call,
+                ExecutionInput,
+            },
+            CallFlags,
+        },
+        prelude::vec::Vec,
+        storage::Mapping,
     };
-    use ink::prelude::vec::Vec;
-    use ink::storage::Mapping;
-    use scale::{Encode, Output};
+    use scale::{
+        Encode,
+        Output,
+    };
 
     pub type Nonce = u128;
 
@@ -119,11 +127,11 @@ mod forwarder {
                     // Is the message signed by the same account that sent it?
                     // And does the transacation have the expected nonce?
                     if expected_nonce != req.nonce {
-                        return Err(Error::IncorrectNonce);
+                        return Err(Error::IncorrectNonce)
                     }
 
                     if signer != caller {
-                        return Err(Error::IncorrectSignature);
+                        return Err(Error::IncorrectSignature)
                     }
 
                     Ok(())
@@ -141,12 +149,12 @@ mod forwarder {
 
             // Assert that the correct amount of tokens were sent to this contract instance with this fn call
             if self.env().transferred_value() != req.transferred_value {
-                return Err(Error::ValueTransferMismatch);
+                return Err(Error::ValueTransferMismatch)
             }
 
             // Assert that the transaction hasn't already expired
             if self.env().block_timestamp() >= req.expiration_time_seconds {
-                return Err(Error::TransactionExpired);
+                return Err(Error::TransactionExpired)
             }
 
             let caller = req.from;
@@ -164,7 +172,9 @@ mod forwarder {
                 .exec_input(
                     // Add signer's account_id as extra input bytes
                     // SCALE encoded
-                    ExecutionInput::new(req.selector.into()).push_arg(CallInput(&req.input)).push_arg(req.from.encode())
+                    ExecutionInput::new(req.selector.into())
+                        .push_arg(CallInput(&req.input))
+                        .push_arg(req.from.encode()),
                 )
                 .returns::<()>()
                 .try_invoke();
@@ -178,10 +188,8 @@ mod forwarder {
                     });
                     Ok(())
                 }
-                Err(_) => {
-                    Err(Error::TransactionFailed)
-                }
-                _ => Err(Error::TransactionFailed)
+                Err(_) => Err(Error::TransactionFailed),
+                _ => Err(Error::TransactionFailed),
             }
         }
 
