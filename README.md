@@ -21,8 +21,8 @@ In case it fails for some reason, you can also setup one by one.
 1) Compile our contracts:
 ```bash
 $ cargo contract build --manifest-path ./contracts/forwarder/Cargo.toml
-cargo contract build --manifest-path ./contracts/flipper/Cargo.toml
-cargo contract build --manifest-path ./contracts/registry/Cargo.toml
+$ cargo contract build --manifest-path ./contracts/flipper/Cargo.toml
+$ cargo contract build --manifest-path ./contracts/registry/Cargo.toml
 ```
 
 2) Install the npm dependencies:
