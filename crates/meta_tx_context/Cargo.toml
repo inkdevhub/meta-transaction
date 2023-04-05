@@ -1,23 +1,19 @@
 [package]
-name = "flipper"
+name = "meta_tx_context"
 version = "0.1.0"
 authors = ["Stake Technologies <devops@stake.co.jp>"]
 edition = "2021"
 
 [dependencies]
-ink = { version = "4.0.1", default-features = false }
-
+ink = { version = "=4.0.1", default-features = false }
 scale = { package = "parity-scale-codec", version = "3", default-features = false, features = ["derive"] }
 scale-info = { version = "2.3", default-features = false, features = ["derive"], optional = true }
 
-openbrush = { tag = "3.0.0", git = "https://github.com/727-Ventures/openbrush-contracts", default-features = false, features = [] }
-meta_tx_context = { path = "../../crates/meta_tx_context", default-features = false }
-
-[dev-dependencies]
-ink_e2e = "4.0.1"
+openbrush = { tag = "3.0.0", git = "https://github.com/727-Ventures/openbrush-contracts", default-features = false, features =["access_control"] }
 
 [lib]
-path = "lib.rs"
+path = "src/lib.rs"
+crate-type = ["rlib"]
 
 [features]
 default = ["std"]
@@ -26,7 +22,4 @@ std = [
     "scale/std",
     "scale-info/std",
     "openbrush/std",
-    "meta_tx_context/std",
 ]
-ink-as-dependency = []
-e2e-tests = []
