@@ -11,7 +11,7 @@ pub type MetaTxContextRef = dyn MetaTxContext;
 #[openbrush::trait_definition]
 pub trait MetaTxContext {
     #[ink(message)]
-    fn get_trusted_forwarder(&self) -> Option<AccountId>;
+    fn is_trusted_forwarder(&self, account_id: AccountId) -> bool;
 
     #[ink(message)]
     fn set_trusted_forwarder(&mut self, forwarder: AccountId) -> Result<(), AccessControlError>;

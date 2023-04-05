@@ -29,8 +29,8 @@ impl<T> MetaTxContext for T
 where
     T: Storage<Data> + Storage<access_control::Data>,
 {
-    default fn get_trusted_forwarder(&self) -> Option<AccountId> {
-        self.data::<Data>().trusted_forwarder
+    default fn is_trusted_forwarder(&self, account_id: AccountId) -> bool {
+        self.data::<Data>().trusted_forwarder == Some(account_id)
     }
 
     #[modifiers(only_role(DEFAULT_ADMIN_ROLE))]
