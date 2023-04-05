@@ -179,8 +179,8 @@ mod registry {
             let mut registry = Registry::new([0x0; 32].into());
             assert_eq!(registry.set_trusted_forwarder([0x1; 32].into()), Ok(()));
             assert_eq!(
-                registry.get_trusted_forwarder(),
-                Some(AccountId::from([0x1; 32]))
+                registry.is_trusted_forwarder(AccountId::from([0x1; 32])),
+                true
             );
         }
 
